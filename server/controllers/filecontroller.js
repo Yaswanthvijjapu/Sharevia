@@ -1,39 +1,47 @@
-// controllers/fileController.js
-const shortid = require('shortid');
-const { getGFS } = require('../config/db');
-const qr = require('qr-image');
+const mongoose = require('mongoose');
+const { getGfs } = require('../config/db');
+const generateQRCode = require('../utils/generateQR');
 
-const uploadFile = (req, res) => {
-  const file = req.file;
-  const fileId = shortid.generate();
-  const downloadLink = `${process.env.BASE_URL}/api/files/download/${file.filename}`;
-
-  // Optional: store mapping in MongoDB if you want analytics
-  res.json({
-    fileName: file.originalname,
-    link: downloadLink,
-    qr: `${process.env.BASE_URL}/api/files/qr/${file.filename}`
-  });
-};
-
-const downloadFile = (req, res) => {
-  const gfs = getGFS();
-  const file = req.params.filename;
-
-  gfs.files.findOne({ filename: file }, (err, fileData) => {
-    if (!fileData || fileData.length === 0) {
-      return res.status(404).json({ msg: 'File not found' });
+const uploadFile = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: 'No file uploaded' });
     }
-    const readStream = gfs.createReadStream(fileData.filename);
-    readStream.pipe(res);
-  });
+    const fileId = req.file.id;
+    const shareLink = `${req.protocol}://${req.get('host')}/api/files/${fileId}`;
+    res.json({ fileId, shareLink });
+  } catch (err) {
+    res.status(500).json({ error: 'Upload failed' });
+  }
 };
 
-const generateQR = (req, res) => {
-  const fileURL = `${process.env.BASE_URL}/api/files/download/${req.params.filename}`;
-  const qr_svg = qr.image(fileURL, { type: 'png' });
-  res.type('png');
-  qr_svg.pipe(res);
+const getFile = async (req, res) => {
+  try {
+    const file = await mongoose.connection.db.collection('uploads.files').findOne({
+      _id: new mongoose.Types.ObjectId(req.params.id),
+    });
+    if (!file) {
+      return res.status(404).json({ error: 'File not found' });
+    }
+
+    const gfs = getGfs();
+    const downloadStream = gfs.openDownloadStream(file._id);
+    res.set('Content-Type', file.contentType);
+    res.set('Content-Disposition', `attachment; filename="${file.filename}"`);
+    downloadStream.pipe(res);
+  } catch (err) {
+    res.status(500).json({ error: 'Server error' });
+  }
 };
 
-module.exports = { uploadFile, downloadFile, generateQR };
+const getQRCode = async (req, res) => {
+  try {
+    const shareLink = `${req.protocol}://${req.get('host')}/api/files/${req.params.id}`;
+    const qrCode = await generateQRCode(shareLink);
+    res.json({ qrCode });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { uploadFile, getFile, getQRCode };

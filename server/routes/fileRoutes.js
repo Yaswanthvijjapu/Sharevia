@@ -1,11 +1,10 @@
-// routes/fileRoutes.js
 const express = require('express');
 const router = express.Router();
-const upload = require('../midddleware/upload');
-const { uploadFile, downloadFile, generateQR } = require('../controllers/filecontroller');
+const { uploadFile, getFile, getQRCode } = require('../controllers/filecontroller');
+const upload = require('../middleware/upload');
 
 router.post('/upload', upload.single('file'), uploadFile);
-router.get('/download/:filename', downloadFile);
-router.get('/qr/:filename', generateQR);
+router.get('/files/:id', getFile);
+router.get('/qrcode/:id', getQRCode);
 
 module.exports = router;

@@ -1,16 +1,24 @@
-// config/db.js
 const mongoose = require('mongoose');
-const Grid = require('gridfs-stream');
 
 let gfs;
+
 const connectDB = async () => {
-  const conn = await mongoose.connect(process.env.MONGO_URI);
-console.log(`MongoDB Connected`);
-  const db = mongoose.connection;
-  gfs = Grid(db.db, mongoose.mongo);
-  gfs.collection('uploads');
+  try {
+    const conn = await mongoose.connect(process.env.MONGO_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+
+    // Initialize GridFS
+    gfs = new mongoose.mongo.GridFSBucket(conn.connection.db, {
+      bucketName: 'uploads',
+    });
+  } catch (err) {
+    console.error(`Error: ${err.message}`);
+    process.exit(1);
+  }
 };
 
-const getGFS = () => gfs;
-
-module.exports = { connectDB, getGFS };
+// Export gfs and connectDB
+module.exports = { connectDB, getGfs: () => gfs };
