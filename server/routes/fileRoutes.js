@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { uploadFile, getFile, getQRCode } = require('../controllers/filecontroller');
-const upload = require('../middleware/upload');
+const upload = require('../midddleware/upload');
 
 router.post('/upload', upload.single('file'), uploadFile);
 router.get('/files/:id', getFile);
