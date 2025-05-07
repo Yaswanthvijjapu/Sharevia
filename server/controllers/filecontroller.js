@@ -38,7 +38,6 @@ export const upload = multer({
   },
 });
 
-// Upload a file
 export const uploadFile = async (req, res) => {
   try {
     if (!req.file) {
@@ -60,6 +59,7 @@ export const uploadFile = async (req, res) => {
     });
 
     await file.save();
+    console.log('File saved to MongoDB:', file); // Debug log
 
     res.status(StatusCodes.CREATED).json({
       message: 'File uploaded successfully',
@@ -79,7 +79,9 @@ export const getFiles = async (req, res) => {
     if (req.user) {
       query.user = req.user.id;
     }
+    console.log('Querying files with:', query); // Debug log
     const files = await File.find(query).sort({ createdAt: -1 });
+    console.log('Files found:', files); // Debug log
     res.status(StatusCodes.OK).json(files);
   } catch (error) {
     console.error('Get files error:', error);

@@ -7,7 +7,6 @@ import {
   deleteFile,
   upload
 } from '../controllers/filecontroller.js';
-import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
@@ -15,13 +14,13 @@ const router = express.Router();
 router.post('/upload', upload.single('file'), uploadFile);
 
 // 2. List all files
-router.get('/', protect, getFiles);
+router.get('/', getFiles); // Removed protect
 
 // 3. Download by ID
-router.get('/file/:id', downloadFile); // Adjusted to match second set's route
+router.get('/file/:id', downloadFile);
 
 // 4. Delete by ID
-router.delete('/:id', protect, deleteFile);
+router.delete('/:id', deleteFile); // Removed protect
 
 // 5. Get metadata by ID
 router.get('/:id', getFileById);
