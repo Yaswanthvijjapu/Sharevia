@@ -1,17 +1,16 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
 const fileSchema = new mongoose.Schema({
-  filename: {
+  path: {
     type: String,
     required: true,
   },
-  originalname: {
+  name: {
     type: String,
     required: true,
   },
-  encoding: String,
-  mimetype: {
+  type: {
     type: String,
     required: true,
   },
@@ -36,24 +35,18 @@ const fileSchema = new mongoose.Schema({
   expiresAt: {
     type: Date,
     required: true,
+    index: { expireAfterSeconds: 0 }, // TTL index for auto-deletion
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+}, { timestamps: true });
 
 // Virtual for share URL
-fileSchema.virtual('shareUrl').get(function() {
+fileSchema.virtual('shareUrl').get(function () {
   return `${process.env.CLIENT_URL || 'http://localhost:3000'}/file/${this._id}`;
 });
 
 // Include virtuals when converting to JSON
 fileSchema.set('toJSON', { virtuals: true });
 fileSchema.set('toObject', { virtuals: true });
-
-// Add index for expiration cleanup
-fileSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 const File = mongoose.model('File', fileSchema);
 
