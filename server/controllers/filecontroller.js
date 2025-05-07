@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import multer from 'multer';
 import path from 'path';
 import File from '../models/file.js';
+import fs from 'fs/promises';
 import { StatusCodes } from 'http-status-codes';
 
 // Validate MONGODB_URL
@@ -151,21 +152,24 @@ export const downloadFile = async (req, res) => {
 // Delete a file
 export const deleteFile = async (req, res) => {
   try {
+    console.log('Deleting file with ID:', req.params.id);
     const file = await File.findById(req.params.id);
     if (!file) {
       return res.status(StatusCodes.NOT_FOUND).json({ message: 'File not found' });
     }
-    if (req.user && file.user && file.user.toString() !== req.user.id) {
-      return res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Not authorized to delete this file' });
-    }
+    console.log('File found:', file);
 
     // Delete file from disk
-    const fs = require('fs').promises;
     await fs.unlink(file.path).catch((err) => {
-      if (err.code !== 'ENOENT') throw err; // Ignore if file doesn't exist
+      if (err.code !== 'ENOENT') {
+        console.error('Failed to delete file from disk:', err);
+        throw err;
+      }
     });
+    console.log('File deleted from disk:', file.path);
 
     await File.deleteOne({ _id: req.params.id });
+    console.log('File deleted from MongoDB:', req.params.id);
 
     res.status(StatusCodes.OK).json({ message: 'File deleted successfully' });
   } catch (error) {
