@@ -16,6 +16,11 @@ router.post('/upload', upload.single('file'), uploadFile);
 // 2. List all files
 router.get('/', getFiles); // Removed protect
 
+router.get('/', async (req, res) => {
+  const files = await File.find();
+  res.json(files);
+});
+
 // 3. Download by ID
 router.get('/file/:id', downloadFile);
 

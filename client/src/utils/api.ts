@@ -20,10 +20,10 @@
     }
   };
 
-  export const getFiles = async () => {
-    const response = await api.get('/');
-    return response.data as CustomFile[];
-  };
+ export const getFiles = async () => {
+  const response = await api.get('/');
+  return response.data as CustomFile[];
+};
 
   export const getFileById = async (id: string) => {
     const response = await api.get(`/${id}`);
