@@ -1,3 +1,4 @@
+
 import express from 'express';
 import { 
   uploadFile, 
@@ -14,18 +15,13 @@ const router = express.Router();
 router.post('/upload', upload.single('file'), uploadFile);
 
 // 2. List all files
-router.get('/', getFiles); // Removed protect
-
-router.get('/', async (req, res) => {
-  const files = await File.find();
-  res.json(files);
-});
+router.get('/', getFiles);
 
 // 3. Download by ID
 router.get('/file/:id', downloadFile);
 
 // 4. Delete by ID
-router.delete('/:id', deleteFile); // Removed protect
+router.delete('/:id', deleteFile);
 
 // 5. Get metadata by ID
 router.get('/:id', getFileById);
