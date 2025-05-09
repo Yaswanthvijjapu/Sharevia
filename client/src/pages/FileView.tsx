@@ -7,7 +7,6 @@
   import { formatFileSize, formatDate } from '../utils/formatters';
   import Loader from '../components/Loader';
   import { AxiosError } from 'axios';
-  import { toast } from 'react-toastify';
 
   const FileView: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -35,20 +34,19 @@
       }
     };
 
-const handleDownload = async () => {
-  if (!file) return;
-  try {
-    await downloadFile(file._id, file.name);
-    toast.success('Download started!');
-  } catch (err) {
-    console.error('Download error:', err);
-    if (err instanceof AxiosError) {
-      toast.error(err.response?.status === 404 ? 'File not found or expired.' : 'This file has been damaged or is not a valid PDF.');
-    } else {
-      toast.error('An unexpected error occurred.');
-    }
-  }
-};
+    const handleDownload = async () => {
+      if (!file) return;
+      try {
+        await downloadFile(file._id, file.name); // Use file.uniqueId if needed
+      } catch (err) {
+        console.error('Download error:', err);
+        if (err instanceof AxiosError) {
+          setError(err.response?.status === 404 ? 'File not found or expired.' : 'This file appears to be damaged or invalid.');
+        } else {
+          setError('An unexpected error occurred during download.');
+        }
+      }
+    };
 
     if (loading) return <Loader />;
 

@@ -13,7 +13,7 @@
   const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
     const handleDelete = async () => {
       try {
-        await deleteFile(file._id);
+        await deleteFile(file._id); // Use file.uniqueId if needed
         onDelete(file._id);
       } catch (error) {
         console.error('Delete error:', error);
@@ -23,10 +23,10 @@
 
     const handleDownload = async () => {
       try {
-        await downloadFile(file._id, file.name);
+        await downloadFile(file._id, file.name); // Use file.uniqueId if needed
       } catch (error) {
         console.error('Download error:', error);
-        alert('Failed to download file');
+        alert('This file appears to be damaged or invalid.');
       }
     };
 
