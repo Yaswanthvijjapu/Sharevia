@@ -37,11 +37,11 @@
     const handleDownload = async () => {
       if (!file) return;
       try {
-        await downloadFile(file._id);
+        await downloadFile(file._id, file.name);
       } catch (err) {
         console.error('Download error:', err);
         if (err instanceof AxiosError) {
-          setError(err.response?.status === 404 ? 'File not found or expired.' : `Download failed: ${err.message}`);
+          setError(err.response?.status === 404 ? 'File not found or expired.' : 'Failed to load PDF document.');
         } else {
           setError('An unexpected error occurred during download.');
         }

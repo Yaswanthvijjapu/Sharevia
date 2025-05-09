@@ -30,7 +30,7 @@
     return response.data as CustomFile;
   };
 
-  export const downloadFile = async (id: string) => {
+  export const downloadFile = async (id: string, name: string) => {
     try {
       // Trigger download by opening the URL in a new tab
       const url = `${API_URL}/api/files/file/${id}`;
