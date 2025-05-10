@@ -1,11 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { File, Trash2, Download, FileText, Video, Code, Image } from 'lucide-react';
 import type { File as CustomFile } from '../types';
 import { formatFileSize, formatDate } from '../utils/formatters';
 import { deleteFile, downloadFile } from '../utils/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
+import { QRCodeCanvas as QRCode } from 'qrcode.react';
 
 interface FileCardProps {
   file: CustomFile;
@@ -13,6 +14,8 @@ interface FileCardProps {
 }
 
 const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
+  const [showQR, setShowQR] = useState(false);
+
   const getFileIcon = (type: string) => {
     if (type.includes('pdf')) return <FileText className="h-8 w-8 text-primary-600" />;
     if (type.includes('wordprocessingml.document')) return <FileText className="h-8 w-8 text-primary-600" />;
@@ -48,7 +51,9 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 hover:shadow-md transition-all duration-200"
+      className="relative bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 hover:shadow-md transition-all duration-200"
+      onMouseEnter={() => setShowQR(true)}
+      onMouseLeave={() => setShowQR(false)}
     >
       <div className="flex items-center space-x-4">
         {getFileIcon(file.type)}
@@ -77,6 +82,22 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
           </button>
         </div>
       </div>
+      {showQR && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.2 }}
+          className="absolute top-0 left-0 w-full h-full bg-white dark:bg-slate-800 rounded-xl flex items-center justify-center"
+        >
+          <QRCode
+            value={file.shareUrl}
+            size={100}
+            bgColor="transparent"
+            fgColor="#1e293b"
+            className="dark:[&>canvas]:!bg-slate-800 dark:[&>canvas]:!text-white"
+          />
+        </motion.div>
+      )}
     </motion.div>
   );
 };
