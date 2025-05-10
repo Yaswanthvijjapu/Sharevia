@@ -15,6 +15,7 @@ const FileView: React.FC = () => {
   const [file, setFile] = useState<CustomFile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showDownloadQR, setShowDownloadQR] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -82,6 +83,8 @@ const FileView: React.FC = () => {
 
   if (!file) return null;
 
+  const downloadUrl = `${window.location.origin}/api/files/file/${file._id}`; // Download endpoint
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -89,7 +92,7 @@ const FileView: React.FC = () => {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-slate-100 dark:bg-slate-900 flex items-center justify-center px-4"
     >
-      <div className="max-w-lg w-full bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8">
+      <div className="max-w-lg w-full bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-8 relative">
         <Link
           to="/"
           className="inline-flex items-center text-sm text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 mb-6"
@@ -115,26 +118,57 @@ const FileView: React.FC = () => {
           </div>
           <button
             onClick={handleDownload}
-            className="w-full px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200"
+            className="w-full px-6 py-3 bg-primary-600 text-white rounded-lg font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-all duration-200 mb-4"
           >
             <div className="flex items-center justify-center space-x-2">
               <Download className="h-4 w-4" />
               <span>Download File</span>
             </div>
           </button>
-          <div className="mt-6">
+          <button
+            onClick={() => setShowDownloadQR(!showDownloadQR)}
+            className="w-full px-6 py-3 bg-primary-100 dark:bg-primary-900/20 text-primary-600 dark:text-primary-400 rounded-lg hover:bg-primary-200 dark:hover:bg-primary-900/30 transition-colors"
+          >
+            <div className="flex items-center justify-center space-x-2">
+              <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+                <path d="M10 3h4v18h-4z" />
+                <path d="M3 10h18v4H3z" />
+              </svg>
+              <span>Download QR</span>
+            </div>
+          </button>
+        </div>
+        {showDownloadQR && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            className="absolute top-0 left-0 w-full h-full bg-white dark:bg-slate-800 rounded-xl flex flex-col items-center justify-center z-10"
+          >
             <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-              Scan to share
+              Scan to download
             </p>
             <QRCode
-              value={file.shareUrl}
+              value={downloadUrl}
               size={128}
-              bgColor="transparent"
+              bgColor="#ffffff"
               fgColor="#1e293b"
-              className="mx-auto dark:[&>canvas]:!bg-slate-800 dark:[&>canvas]:!text-white"
+              level="H"
+              includeMargin={true}
+              className="p-2 border border-slate-200 dark:border-slate-700 rounded-lg"
             />
-          </div>
-        </div>
+            <button
+              onClick={() => setShowDownloadQR(false)}
+              className="mt-2 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+            >
+              Close
+            </button>
+          </motion.div>
+        )}
       </div>
     </motion.div>
   );
