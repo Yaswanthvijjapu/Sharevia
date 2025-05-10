@@ -3,7 +3,7 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import { v4 as uuidv4 } from 'uuid';
-import File from '../models/File.js';
+import File from '../models/file.js';
 
 // Multer configuration
 const allowedMimeTypes = [
@@ -16,6 +16,8 @@ const allowedMimeTypes = [
   'video/quicktime', // .mov
   'video/webm', // .webm
   'text/plain', // .txt
+  'image/png', // .png
+  'image/jpeg', // .jpg, .jpeg
 ];
 
 const storage = multer.diskStorage({
@@ -34,7 +36,7 @@ export const upload = multer({
     if (allowedMimeTypes.includes(file.mimetype)) {
       cb(null, true);
     } else {
-      cb(new Error('Invalid file type. Allowed: PDF, DOCX, JSON, MP4, AVI, MKV, MOV, WEBM, TXT'), false);
+      cb(new Error('Invalid file type. Allowed: PDF, DOCX, JSON, MP4, AVI, MKV, MOV, WEBM, TXT, PNG, JPG'), false);
     }
   },
 });
