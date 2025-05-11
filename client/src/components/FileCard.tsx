@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { File, Trash2, Download, FileText, Video, Code, Image } from 'lucide-react';
 import { type File as CustomFile } from '../types';
 import { formatFileSize, formatDate } from '../utils/formatters';
@@ -7,6 +6,7 @@ import { deleteFile, downloadFile } from '../utils/api';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { QRCodeCanvas as QRCode } from 'qrcode.react';
+import { ThemeContext } from '../context/ThemeContext';
 
 interface FileCardProps {
   file: CustomFile;
@@ -15,19 +15,20 @@ interface FileCardProps {
 
 const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
   const [showDownloadQR, setShowDownloadQR] = useState(false);
+  const { isDarkMode } = useContext(ThemeContext);
 
   const getFileIcon = (type: string) => {
-    if (type.includes('pdf')) return <FileText className="h-8 w-8 text-primary-600" />;
-    if (type.includes('wordprocessingml.document')) return <FileText className="h-8 w-8 text-primary-600" />;
-    if (type.includes('json')) return <Code className="h-8 w-8 text-primary-600" />;
-    if (type.includes('video')) return <Video className="h-8 w-8 text-primary-600" />;
-    if (type.includes('image')) return <Image className="h-8 w-8 text-primary-600" />;
-    return <File className="h-8 w-8 text-primary-600" />;
+    if (type.includes('pdf')) return <FileText className={`h-8 w-8 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />;
+    if (type.includes('wordprocessingml.document')) return <FileText className={`h-8 w-8 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />;
+    if (type.includes('json')) return <Code className={`h-8 w-8 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />;
+    if (type.includes('video')) return <Video className={`h-8 w-8 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />;
+    if (type.includes('image')) return <Image className={`h-8 w-8 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />;
+    return <File className={`h-8 w-8 ${isDarkMode ? 'text-indigo-400' : 'text-indigo-600'}`} />;
   };
 
   const handleDelete = async () => {
     try {
-      await deleteFile(file._id); // Use file.uniqueId if needed
+      await deleteFile(file._id);
       onDelete(file._id);
       toast.success('File deleted successfully!');
     } catch (error) {
@@ -38,7 +39,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
 
   const handleDownload = async () => {
     try {
-      await downloadFile(file._id, file.name); // Use file.uniqueId if needed
+      await downloadFile(file._id, file.name);
       toast.success('Download started!');
     } catch (error) {
       console.error('Download error:', error);
@@ -46,36 +47,36 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
     }
   };
 
-  const downloadUrl = `${window.location.origin}/api/files/file/${file._id}`; // Download endpoint
+  const downloadUrl = `${window.location.origin}/api/files/file/${file._id}`;
 
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.3 }}
-      className="relative bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-4 hover:shadow-md transition-all duration-200"
+      className={`relative ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'} rounded-xl shadow-sm border p-4 hover:shadow-md transition-all duration-200`}
     >
       <div className="flex items-center space-x-4">
         {getFileIcon(file.type)}
         <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+          <p className={`text-sm font-medium ${isDarkMode ? 'text-white' : 'text-slate-900'} truncate`}>
             {file.name}
           </p>
-          <p className="text-xs text-slate-500 dark:text-slate-400">
+          <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
             {formatFileSize(file.size)} • {formatDate(file.createdAt)}
           </p>
         </div>
         <div className="flex space-x-2">
           <button
             onClick={handleDownload}
-            className="p-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full transition-colors"
+            className={`p-2 ${isDarkMode ? 'text-indigo-400 hover:bg-indigo-900/20' : 'text-indigo-600 hover:bg-indigo-50'} rounded-full transition-colors`}
             title="Download"
           >
             <Download className="h-5 w-5" />
           </button>
           <button
             onClick={() => setShowDownloadQR(!showDownloadQR)}
-            className="p-2 text-primary-600 hover:bg-primary-50 dark:hover:bg-primary-900/20 rounded-full transition-colors"
+            className={`p-2 ${isDarkMode ? 'text-indigo-400 hover:bg-indigo-900/20' : 'text-indigo-600 hover:bg-indigo-50'} rounded-full transition-colors`}
             title="Download QR"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -89,7 +90,7 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
           </button>
           <button
             onClick={handleDelete}
-            className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-full transition-colors"
+            className={`p-2 ${isDarkMode ? 'text-red-400 hover:bg-red-900/20' : 'text-red-600 hover:bg-red-50'} rounded-full transition-colors`}
             title="Delete"
           >
             <Trash2 className="h-5 w-5" />
@@ -101,9 +102,9 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.2 }}
-          className="absolute top-0 left-0 w-full h-full bg-white dark:bg-slate-800 rounded-xl flex flex-col items-center justify-center z-10"
+          className={`absolute top-0 left-0 w-full h-full ${isDarkMode ? 'bg-slate-800' : 'bg-white'} rounded-xl flex flex-col items-center justify-center z-10`}
         >
-          <p className="text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+          <p className={`text-sm font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-700'} mb-2`}>
             Scan to download
           </p>
           <QRCode
@@ -113,11 +114,11 @@ const FileCard: React.FC<FileCardProps> = ({ file, onDelete }) => {
             fgColor="#1e293b"
             level="H"
             includeMargin={true}
-            className="p-2 border border-slate-200 dark:border-slate-700 rounded-lg"
+            className={`p-2 border ${isDarkMode ? 'border-slate-700' : 'border-slate-200'} rounded-lg`}
           />
           <button
             onClick={() => setShowDownloadQR(false)}
-            className="mt-2 text-sm text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
+            className={`mt-2 text-sm ${isDarkMode ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-700'}`}
           >
             Close
           </button>
