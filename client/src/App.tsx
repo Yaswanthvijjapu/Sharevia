@@ -1,20 +1,21 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import FileView from './pages/FileView';
-import NotFound from './pages/NotFound';
+import { ThemeProvider } from './context/ThemeContext';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <ThemeProvider>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/file/:id" element={<FileView />} />
-        <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+    </ThemeProvider>
   );
-}
+};
 
 export default App;
