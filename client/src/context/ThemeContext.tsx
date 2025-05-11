@@ -1,5 +1,4 @@
-
-import React, { createContext, useState, useEffect, type ReactNode } from 'react';
+import React, { createContext, useState, useEffect } from 'react';
 
 interface ThemeContextType {
   isDarkMode: boolean;
@@ -11,33 +10,18 @@ export const ThemeContext = createContext<ThemeContextType>({
   toggleDarkMode: () => {},
 });
 
-export const ThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(false);
-
-  // Initialize dark mode from localStorage or system preference
-  useEffect(() => {
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      setIsDarkMode(savedTheme === 'dark');
-    } else {
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setIsDarkMode(prefersDark);
-    }
-    console.log('Initialized theme:', savedTheme || 'system'); // Debug log
-  }, []);
+    return savedTheme === 'dark';
+  });
 
-  // Persist dark mode to localStorage
   useEffect(() => {
     localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
-    console.log('Theme updated:', isDarkMode ? 'dark' : 'light'); // Debug log
   }, [isDarkMode]);
 
   const toggleDarkMode = () => {
-    setIsDarkMode((prev) => {
-      const newMode = !prev;
-      console.log('Toggling theme to:', newMode ? 'dark' : 'light'); // Debug log
-      return newMode;
-    });
+    setIsDarkMode((prev) => !prev);
   };
 
   return (
