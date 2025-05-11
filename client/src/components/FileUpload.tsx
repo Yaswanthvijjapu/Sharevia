@@ -101,7 +101,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`bg-white rounded-xl shadow-sm border ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'} p-6`}
+      className={`rounded-xl shadow-sm border ${isDarkMode ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'} p-6`}
     >
       <form onSubmit={handleSubmit}>
         <div className="space-y-6">
