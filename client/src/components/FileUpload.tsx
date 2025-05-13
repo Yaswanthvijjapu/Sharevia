@@ -32,6 +32,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
     '.png',
     '.jpg',
     '.jpeg',
+    '.gif',
   ];
 
   const handleFileChange = (selectedFile: File) => {
@@ -40,7 +41,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
       .toLowerCase();
     if (!allowedExtensions.includes(extension)) {
       setError(
-        'Invalid file type. Allowed: PDF, DOCX, JSON, MP4, AVI, MKV, MOV, WEBM, TXT, PNG, JPG'
+        'Invalid file type. Allowed: PDF, DOCX, JSON, MP4, AVI, MKV, MOV, WEBM, TXT, PNG, JPG, JPEG, GIF'
       );
       setFile(null);
     } else {
