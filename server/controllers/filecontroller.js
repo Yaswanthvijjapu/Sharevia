@@ -18,6 +18,7 @@ const allowedMimeTypes = [
   'text/plain', // .txt
   'image/png', // .png
   'image/jpeg', // .jpg, .jpeg
+  'image/gif', // .gif
 ];
 
 const storage = multer.diskStorage({
