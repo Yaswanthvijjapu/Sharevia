@@ -3,6 +3,7 @@ import React, { useContext, useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Share2, Shield, Clock, BarChart, ArrowRight, Sun, Moon, Download, Copy, Trash2 } from 'lucide-react';
+import { FaWhatsapp } from 'react-icons/fa';
 import FileUpload from '../components/FileUpload';
 import { ThemeContext } from '../context/ThemeContext';
 import type { File as CustomFile } from '../types';
@@ -235,9 +236,7 @@ const Home: React.FC = () => {
                             </svg>
                           </TwitterShareButton>
                           <WhatsappShareButton url={uploadedFile.shareUrl} className="flex items-center">
-                            <svg className="h-8 w-8 text-green-500" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.134.297-.347.446-.52.149-.174.297-.347.397-.496.099-.149.099-.347-.002-.496-.099-.149-.397-.863-.67-1.162-.273-.297-.595-.297-.892-.198-.297.099-1.255.446-1.955 1.164-.693.693-.743 1.611-.644 2.059.099.446.892 2.059 2.178 3.023.992.743 2.228 1.164 3.767 1.362.495.099.892.099 1.29-.099.397-.198 1.29-.966 1.487-1.362.198-.397.198-.744.099-.892-.099-.149-.297-.347-.595-.496zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
-                            </svg>
+                            <FaWhatsapp className="h-8 w-8 text-green-500" />
                           </WhatsappShareButton>
                         </div>
                       </td>
