@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
+import { Link } from 'react-router-dom';
 import type { File as CustomFile } from '../types';
 import { getFiles } from '../utils/api';
 import FileCard from '../components/FileCard';
@@ -7,6 +8,7 @@ import Loader from '../components/Loader';
 import { AxiosError } from 'axios';
 import { motion } from 'framer-motion';
 import { ThemeContext } from '../context/ThemeContext';
+import { ChevronLeft } from 'lucide-react';
 
 const Dashboard: React.FC = () => {
   const [files, setFiles] = useState<CustomFile[]>([]);
@@ -54,6 +56,13 @@ const Dashboard: React.FC = () => {
         transition={{ duration: 0.5 }}
         className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8"
       >
+        <Link
+          to="/"
+          className={`inline-flex items-center text-sm ${isDarkMode ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-700'} mb-6`}
+        >
+          <ChevronLeft className="h-4 w-4 mr-1" />
+          Back to Home
+        </Link>
         <h1 className={`text-3xl font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'} mb-8`}>
           Your Files
         </h1>
