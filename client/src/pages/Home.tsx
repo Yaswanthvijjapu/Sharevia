@@ -23,9 +23,37 @@ const Home: React.FC = () => {
     toast.success('File uploaded successfully!');
   };
 
-  const handleCopyUrl = (url: string) => {
-    navigator.clipboard.writeText(url);
-    toast.success('URL copied to clipboard');
+  const handleCopyUrl = async (url: string) => {
+    console.log('Copying URL:', url); // Debug log
+    if (!url || typeof url !== 'string') {
+      console.error('Invalid URL:', url);
+      toast.error('Failed to copy: Invalid URL');
+      return;
+    }
+    try {
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(url);
+        toast.success('URL copied to clipboard');
+      } else {
+        // Fallback for older browsers or non-secure contexts
+        const textArea = document.createElement('textarea');
+        textArea.value = url;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          toast.success('URL copied to clipboard');
+        } catch (err) {
+          console.error('Fallback copy failed:', err);
+          toast.error('Failed to copy URL');
+        } finally {
+          document.body.removeChild(textArea);
+        }
+      }
+    } catch (error) {
+      console.error('Copy error:', error);
+      toast.error('Failed to copy URL');
+    }
   };
 
   const handleDownload = (url: string, filename: string) => {
