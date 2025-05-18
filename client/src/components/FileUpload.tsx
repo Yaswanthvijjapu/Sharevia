@@ -130,6 +130,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ onUploadSuccess }) => {
               </p>
               <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'} mt-1`}>
                 PDF, DOCX, JSON, MP4, AVI, MKV, MOV, WEBM, TXT, PNG, JPG (max 100MB)
+                
               </p>
               <input
                 id="file-upload"
