@@ -9,6 +9,7 @@ interface EmptyStateProps {
 }
 
 const EmptyState: React.FC<EmptyStateProps> = ({ title, description, onUpload }) => {
+  
   const { isDarkMode } = useContext(ThemeContext);
 
   return (
